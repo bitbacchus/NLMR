@@ -45,7 +45,8 @@ Imports:
     tibble,
     fasterize,
     sf,
-    Rcpp
+    Rcpp,
+    RcppArmadillo
 URL: https://ropensci.github.io/NLMR/
 BugReports: https://github.com/ropensci/NLMR/issues/
 Suggests:
@@ -58,4 +59,5 @@ Suggests:
     rasterVis
 VignetteBuilder: knitr
 LinkingTo: 
-    Rcpp
+    Rcpp,
+    RcppArmadillo

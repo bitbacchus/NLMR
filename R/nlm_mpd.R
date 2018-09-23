@@ -87,16 +87,20 @@ nlm_mpd <- function(ncol,
   # Init size of matrix (width and height 2^n + 1) and the corresponding matrix
   max_dim <- max(nrow, ncol)
   N <- as.integer(ceiling(base::log(max_dim - 1, 2)))
-  size <- 2 ** N + 1
+  size <- 2^N + 1
 
   # setup matrix ----
   mpd_raster <- matrix(0, nrow = size, ncol = size)
+  mpd_raster[1,1] <- stats::rnorm(1, 0, rand_dev)
+  mpd_raster[1, ncol(mpd_raster)] <- stats::rnorm(1, 0, rand_dev)
+  mpd_raster[nrow(mpd_raster), 1] <- stats::rnorm(1, 0, rand_dev)
+  mpd_raster[ncol(mpd_raster),nrow(mpd_raster)] <- stats::rnorm(1, 0, rand_dev)
 
   # Main loop  ----
   for (side.length in 2 ^ (N:1)) {
     half.side <- side.length / 2
 
-    # Square step  ----
+    # Diamond step  ----
     for (col in seq(1, size - 1, by = side.length)) {
       for (row in seq(1, size - 1, by = side.length)) {
         avg <- mean(c(
@@ -111,7 +115,7 @@ nlm_mpd <- function(ncol,
       }
     }
 
-    # Diamond step  ----
+    # Square step  ----
     for (row in seq(1, size, by = half.side)) {
       for (col in seq( (col + half.side) %% side.length, size, side.length)) {
         avg <- mean(c(
@@ -147,9 +151,9 @@ nlm_mpd <- function(ncol,
   )
 
   # Rescale values to 0-1 ----
-  if (rescale == TRUE) {
-    mpd_raster <- util_rescale(mpd_raster)
-  }
+  # if (rescale == TRUE) {
+  #   mpd_raster <- util_rescale(mpd_raster)
+  # }
 
   if (verbose == TRUE) {
     message("nlm_mpd returns RasterLayer that fits in the dimension 2^n+1")
@@ -157,3 +161,12 @@ nlm_mpd <- function(ncol,
 
   return(mpd_raster)
 }
+
+
+
+
+midpoint_displacememt <- nlm_mpd(ncol = 100,
+                                nrow = 100,
+                                roughness = 0.61)
+rasterVis::levelplot(midpoint_displacememt, margin = FALSE,
+par.settings = rasterVis::viridisTheme())
