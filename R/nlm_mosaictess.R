@@ -62,7 +62,7 @@ nlm_mosaictess <- function(ncol,
   rnd_points <- sf::st_union(sf::st_sample(bounding_box, germs))
 
   # compute the voronoi tessellation ----
-  voronoi_tess <- sf::st_voronoi(rnd_points)
+  voronoi_tess <- sf::st_voronoi(rnd_points, envelope = bounding_box)
 
   # clip and give random values ----
   voronoi_tess <- sf::st_intersection(sf::st_cast(voronoi_tess), bounding_box)
